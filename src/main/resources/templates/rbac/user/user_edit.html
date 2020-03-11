@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>权限编辑页面</title>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/dataTables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="/css/datepicker/bootstrap-datetimepicker.css"/>
+    <link rel="stylesheet" href="/css/sweetalert/sweetalert2.min.css"/>
+
+    <style type="text/css">
+        .form-group {
+            height: 30px;
+        }
+    </style>
+    <script type="text/javascript" src="/js/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="/js/dataTables/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="/js/dataTables/dataTables.bootstrap.js"></script>
+    <script type="text/javascript" src="/js/sweetalert/sweetalert2.min.js"></script>
+    <script type="text/javascript" src="/js/myjs/common.js"></script>
+    <script type="text/javascript">
+        function doEdit() {
+            if($("#id").val().trim() == ''){
+                doSaveUser();
+                return;
+            }
+            if($("#id").val().trim() != ''){
+                doUpdateUser();
+                return;
+            }
+            
+        }
+        
+        function doSaveUser() {
+            $.ajax({
+                url:"/sys/user/doSaveUser",
+                type:"post",
+                dataType:"json",
+                contentType :"application/json",
+                data: JSON.stringify($('#myform').serializeObject()),
+                success:function(data){
+                    if(data.code==200){
+                        alert(data.message);
+                        window.location.href = "/sys/user/userList";
+                    }else{
+                        alert(data.message);
+                    }
+                },
+                error:function () {
+                    alert("系统错误！")
+                }
+            });
+        }
+
+        function doUpdateUser() {
+            $.ajax({
+                url:"/sys/user/doUpdateUser",
+                type:"post",
+                dataType:"json",
+                contentType :"application/json",
+                data: JSON.stringify($('#myform').serializeObject()),
+                success:function(data){
+                    if(data.code==200){
+                        alert(data.message);
+                        window.location.href = "/sys/user/userList";
+                    }else{
+                        alert(data.message);
+                    }
+                },
+                error:function () {
+                    alert("系统错误！")
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<form id="myform" enctype="multipart/form-data" method="post">
+    <div class="panel panel-default" style="width: 50%; margin: 10px auto;">
+        <div class="panel-heading" style="font-weight: 600;">
+            用户编辑,
+            id:<input th:value="${user.id}" id="id" readonly="readonly" name="id">
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户编码</label>
+                <div class="col-sm-10">
+                    <input class="form-control" th:value="${user.usercode}"  name="usercode" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户姓名</label>
+                <div class="col-sm-10">
+                    <input class="form-control" th:value="${user.username}"  name="username" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户密码</label>
+                <div class="col-sm-10">
+                    <input class="form-control" th:value="${user.password}"  name="password" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-10">
+                    <select name="status" class="select-control">
+                        <option value="1" th:selected="${user.status == 1}">----有效----</option>
+                        <option value="0" th:selected="${user.status == 0}">----无效----</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class=" col-sm-12" style="text-align: center; margin-top: 20px;">
+                    <input value="确定" type="button" class="btn btn-success" th:onclick="|doEdit()|"/>
+                    <input value="重置" type="reset" class="btn btn-default" />
+                    <input value="取消" type="button" class="btn btn-default" onclick="history.go(-1)"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

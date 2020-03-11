@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>系统参数列表</title>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/dataTables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="/css/datepicker/bootstrap-datetimepicker.css"/>
+    <link rel="stylesheet" href="/css/sweetalert/sweetalert2.min.css"/>
+    <style type="text/css">
+        .main {
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 1200px;
+            padding: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="/js/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="/js/dataTables/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="/js/dataTables/dataTables.bootstrap.js"></script>
+    <script type="text/javascript" src="/js/sweetalert/sweetalert2.min.js"></script>
+    <script type="text/javascript">
+
+        function toAddPage() {
+            window.location.href = "/params/toAddPage";
+        }
+        function load(id) {
+            window.location.href = "/params/toAddPage?id="+id;
+        }
+    </script>
+</head>
+<body>
+<div class="main">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <button type="submit" class="btn btn-primary" th:onclick="toAddPage()"> 添 加 </button>
+        </div>
+        <div class="panel-body">
+            <form id="form1" class="form-inline" th:action="@{/params/paramsList}" method="post" th:object="${params}">
+                <div class="form-group">
+                    <label>pid:</label>
+                    <input name="pid" th:value="${selectModel.pid}">
+                </div>
+                <div class="form-group">
+                    <label>key:</label>
+                    <input name="paramsKey" th:value="${selectModel.paramsKey}">
+                </div>
+                <button type="submit" class="btn btn-primary"> 查 询</button>
+            </form>
+        </div>
+    </div>
+    <p class="panel panel-default">
+        <table id="emptable" class="table stripe table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th hidden="hidden">id</th>
+                    <th>pid</th>
+                    <th>params_key</th>
+                    <th>params_value</th>
+                    <th>params_desc</th>
+                    <th>operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="params:${paramsList}">
+                    <td hidden="hidden">
+                    <p th:text="${params.id}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${params.pid}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${params.paramsKey}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${params.paramsValue}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${params.paramsDesc}"></p>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success" th:onclick="|load(${params.id})|">编辑</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li>
+                <span>总条数：<span th:text="${page.totals}"></span>&nbsp;&nbsp;</span>
+                <span>总页数：<span th:text="${page.pages}"></span>&nbsp;&nbsp;</span>
+                <span>当前页码：<span th:text="${page.currentPage}"></span></span>
+            </li>
+            <li>
+                <a th:href="@{/params/paramsList/(currentPage=1,pageSize=${page.pageSize} )}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;首页</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/params/paramsList/(currentPage=${page.currentPage-1},pageSize=${page.pageSize} )}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;上一页</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/params/paramsList/(currentPage=${page.currentPage+1},pageSize=${page.pageSize} )}" aria-label="Next">
+                    <span aria-hidden="true">下一页&raquo;</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/params/paramsList/(currentPage=${page.pages},pageSize=${page.pageSize} )}" aria-label="Next">
+                    <span aria-hidden="true">尾页&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

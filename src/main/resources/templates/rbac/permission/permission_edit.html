@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="UTF-8">
+        <title>权限编辑页面</title>
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/css/dataTables/dataTables.bootstrap.css"/>
+        <link rel="stylesheet" href="/css/datepicker/bootstrap-datetimepicker.css"/>
+        <link rel="stylesheet" href="/css/sweetalert/sweetalert2.min.css"/>
+
+        <style type="text/css">
+            .form-group {
+                height: 30px;
+            }
+        </style>
+        <script type="text/javascript" src="/js/moment/moment.min.js"></script>
+        <script type="text/javascript" src="/js/jquery/jquery.js"></script>
+        <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.js"></script>
+        <script type="text/javascript" src="/js/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+        <script type="text/javascript" src="/js/dataTables/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/js/dataTables/dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="/js/sweetalert/sweetalert2.min.js"></script>
+        <script type="text/javascript">
+            function doSavePermission() {
+                $.ajax({
+                    url:"/permission/doSavePermission",
+                    type:"post",
+                    dataType:"json",
+                    contentType :"application/json",
+                    data: JSON.stringify($('#myform').serializeObject()),
+                    success:function(data){
+                        if(data.code==200){
+                            alert(data.message);
+                            window.location.href = "/permission/permissionList";
+                        }else{
+                            alert(data.message);
+                        }
+                    },
+                    error:function () {
+                        alert("系统错误！")
+                    }
+                });
+            }
+            
+            function doUploadPermission() {
+                $.ajax({
+                    url:"/permission/doUploadPermission",
+                    type:"post",
+                    dataType:"json",
+                    contentType :"application/json",
+                    data: JSON.stringify($('#myform').serializeObject()),
+                    success:function(data){
+                        if(data.code==200){
+                            alert(data.message);
+                            window.location.href = "/permission/permissionList";
+                        }else{
+                            alert(data.message);
+                        }
+                    },
+                    error:function () {
+                        alert("系统错误！")
+                    }
+                });
+            }
+
+            function doEdit() {
+                if($("#code").val().trim() == ''){
+                    alert("请输入code值");
+                    return;
+                }
+                //id，pid都为空
+                //id为空 pid不为空
+                if($("#id").val().trim() == ''){
+                    doSavePermission();
+                    return;
+                }
+                //id,pid都不为空
+                if($("#id").val().trim() != ''){
+                    doUploadPermission();
+                    return;
+                }
+            }
+
+            function checkCode(code) {
+                if($("#code").val().trim() != '') {
+                    var model = 0;
+                    var id = $("#id").val();
+                    //修改的模式
+                    if ($("#id").val().trim() != '' && $("#parentId").val().trim() != '') {
+                        model = 1;
+                    }
+                    $.ajax({
+                        url: "/permission/doCheckCode?code=" + code + "&model=" + model + "&id=" + id,
+                        type: "post",
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.code != 200) {
+                                $("#code").val('');
+                                $("#codep").html('编号重复');
+                            } else {
+                                $("#codep").html('');
+                            }
+
+                        },
+                        error: function () {
+                            alert("系统错误！")
+                        }
+                    });
+                }
+            }
+
+            //序列化对象
+            $.fn.serializeObject = function()
+            {
+                var o = {};
+                var a = this.serializeArray();
+                $.each(a, function() {
+                    if (o[this.name] !== undefined) {
+                        if (!o[this.name].push) {
+                            o[this.name] = [o[this.name]];
+                        }
+                        o[this.name].push(this.value || '');
+                    } else {
+                        o[this.name] = this.value || '';
+                    }
+                });
+                return o;
+            };
+        </script>
+    </head>
+    <body>
+        <form id="myform" enctype="multipart/form-data" method="post">
+            <div class="panel panel-default" style="width: 50%; margin: 10px auto;">
+                <div class="panel-heading" style="font-weight: 600;">
+                    权限编辑,
+                    id:<input th:value="${permission.id}" id="id" type="text" name="id" readonly>
+                    pid:<input th:value="${permission.parentId}" id="parentId" type="text" name="parentId" readonly>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">编号</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" th:value="${permission.code}" id="code" name="code" type="text" value="" th:onblur="checkCode(this.value)">
+                            <p id="codep" style="color: red"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" th:value="${permission.name}"  name="name" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">icon</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" th:value="${permission.icon}" name="icon" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">url</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" th:value="${permission.url}"  name="url" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">状态</label>
+                        <div class="col-sm-10">
+                            <select name="type" class="select-control">
+                                <option value="0" th:selected="${permission.type eq 0}">----菜单----</option>
+                                <option value="1" th:selected="${permission.type eq 1}">----按钮----</option>
+                                <option value="2" th:selected="${permission.type eq 2}">----链接----</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-sm-2 control-label">排序</label>-->
+                        <!--<div class="col-sm-10">-->
+                            <!--<input class="form-control"  name="sort" type="text">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                            <textarea th:text="${permission.description}" class="form-control" name="description" style="width:300px;height:150px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">状态</label>
+                        <div class="col-sm-10">
+                            <select name="status" class="select-control">
+                                <option value="1" th:selected="${permission.status eq 1}">----启用----</option>
+                                <option value="0" th:selected="${permission.status eq 0}">----禁用----</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class=" col-sm-12" style="text-align: center; margin-top: 20px;">
+                            <input value="添加" type="button" class="btn btn-success" th:onclick="|doEdit()|"/>
+                            <input value="重置" type="reset" class="btn btn-default" />
+                            <input value="取消" type="button" class="btn btn-default" onclick="history.go(-1)"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
