@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.user.app.dao.UserBaseMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.user.app.model.user.UserBase">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="password" property="password" />
+        <result column="ct" property="ct" />
+        <result column="ut" property="ut" />
+        <result column="cid" property="cid" />
+        <result column="uid" property="uid" />
+        <result column="ava" property="ava" />
+    </resultMap>
+
+    <insert id="insertSelective" parameterType="com.user.app.model.user.UserBase" useGeneratedKeys="true" keyProperty="id">
+        insert into t_bu_user_base
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="code != null and code !=''" >
+                code,
+            </if>
+            <if test="password != null and password!=''" >
+                password,
+            </if>
+            <if test="ct != null" >
+                ct,
+            </if>
+            <if test="cid != null" >
+                cid,
+            </if>
+            <if test="ut != null" >
+                ut,
+            </if>
+            <if test="uid != null" >
+                uid,
+            </if>
+            <if test="ava != null" >
+                ava,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="code != null and code !=''" >
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password!=''" >
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null" >
+                #{ct,jdbcType=DATETIME},
+            </if>
+            <if test="cid != null" >
+                #{cid,jdbcType=INTEGER},
+            </if>
+            <if test="ut != null" >
+                #{ut,jdbcType=DATETIME},
+            </if>
+            <if test="uid != null" >
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="ava != null" >
+                #{ava,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

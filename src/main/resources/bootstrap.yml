@@ -1,0 +1,25 @@
+#开发环境配置
+spring: 
+  profiles: dev
+  
+eureka:
+  server: 
+    hostname: 127.0.0.1
+---
+
+#eureka center
+eureka:
+  client:
+    registry-fetch-interval-seconds: 30
+    serviceUrl:
+      defaultZone: http://11:11@127.0.0.1:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+    prefer-ip-address: true
+    metadata-map:
+      zone: ABC      # eureka可以理解的元数据
+      lilizhou: BBC  # 不会影响客户端行为
+    lease-expiration-duration-in-seconds: 90
+    lease-renewal-interval-in-seconds: 30
+    
+

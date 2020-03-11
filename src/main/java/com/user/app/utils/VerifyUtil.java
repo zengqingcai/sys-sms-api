@@ -77,4 +77,17 @@ public class VerifyUtil {
                 ran.nextInt(256), ran.nextInt(256));
         return color;
     }
+
+    public static String getSmsCode() {
+        String ZiMu = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGJKLZXCVBNM1234567890";
+        String result = "";
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            int index = random.nextInt(ZiMu.length());
+            char c = ZiMu.charAt(index);
+            result += c;
+        }
+        return result;
+
+    }
 }

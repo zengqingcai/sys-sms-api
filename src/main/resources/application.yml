@@ -1,7 +1,5 @@
 server:
   port: 8016
-#  servlet:
-#    context-path: user-base-server
 
 spring:
   security:
